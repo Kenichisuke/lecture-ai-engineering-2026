@@ -6,6 +6,7 @@
 
 import json
 import random
+from datetime import datetime
 from functools import cache
 from pathlib import Path
 
@@ -95,3 +96,20 @@ def make_quiz(lecture: int) -> str:
         },
         ensure_ascii=False,
     )
+
+
+LOG_DIR = Path(__file__).resolve().parent.parent / "learning_log"
+
+
+def save_learning_log(title: str, content: str) -> str:
+    """学習の記録を learning_log/ フォルダにMarkdownファイルとして保存する。
+
+    「今日の学びを記録して」「ここまでをメモして」と頼まれたときに使う。
+    title は短い題名、content は記録する本文。保存の前に利用者の承認が入る。
+    """
+    LOG_DIR.mkdir(exist_ok=True)
+    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    safe = "".join(c if c.isalnum() or c in "-_" else "_" for c in title)[:40] or "log"
+    path = LOG_DIR / f"{stamp}-{safe}.md"
+    path.write_text(f"# {title}\n\n{content}\n", encoding="utf-8")
+    return f"保存しました: {path.name}"
