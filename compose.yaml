@@ -1,9 +1,9 @@
 services:
-  streamlit:
+  dev:
     build: .
     working_dir: /app
-    ports:
-      - "127.0.0.1:8501:8501"
+    stdin_open: true
+    tty: true
     volumes:
       # Windows側のソースコードを共有
       - .:/app
@@ -13,7 +13,6 @@ services:
 
     environment:
       UV_LINK_MODE: copy
-      WATCHDOG_USE_POLLING: "true"
 
 volumes:
   python_venv:
